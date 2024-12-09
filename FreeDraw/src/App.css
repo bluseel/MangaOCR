@@ -1,0 +1,66 @@
+/* app .css */
+
+.App {
+  position: relative;
+  font-family: Arial, sans-serif;
+}
+
+.toolbar {
+  /* position: sticky; */
+  top: 0;
+  background-color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  z-index: 1000;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.toolbar-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 5px;
+  color: #333;
+}
+
+.toolbar-button.active {
+  color: #007bff; /* Active state color */
+}
+
+.toolbar-button:hover {
+  color: #555;
+}
+
+.scroll-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.black-overlay {
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  z-index: 5;
+}
+
+.scrollable-image {
+  display: block;
+  width: 100%;
+  height: 700vh;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw; /* Full viewport width */
+  height: 100%; /* Start with 100% height */
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  z-index: 9999; /* Place on top of all content */
+  pointer-events: none; /* Make it unclickable */
+}

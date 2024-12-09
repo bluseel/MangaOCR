@@ -1,0 +1,49 @@
+/* recatngle css */
+
+.rectangle {
+  position: absolute;
+  z-index: 100;
+  min-width: 40px;
+  min-height: 40px;
+}
+
+.rectangle::after {
+  display: block;
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: blue;
+  opacity: 0.7;
+}
+
+.delete-button {
+  z-index: 100;
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: transparent;
+  border: none;
+  background-color: white;
+  color: black;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.resize-dot {
+  z-index: 100;
+  position: absolute;
+  cursor: se-resize;
+  width: 8px;
+  height: px;
+  background-color: red;
+  border-radius: 50%;
+}
+
+.resize-dot:hover {
+  z-index: 100;
+  background-color: #ff0000;
+}
