@@ -177,10 +177,21 @@ const App = () => {
   // Function to capture the image as base64 and send to the backend
   const captureAndProcessImage = async () => {
     try {
+      // Capture the image from the imageRef
       const canvas = await html2canvas(imageRef.current);
-      const base64Image = canvas.toDataURL(); // Get image as base64
+      const context = canvas.getContext("2d");
 
-      // Send the base64 image to the Flask backend
+      // Draw the rectangles on the canvas
+      rectangles.forEach((rect) => {
+        context.strokeStyle = "red"; // Set rectangle border color
+        context.lineWidth = 2; // Set border thickness
+        context.strokeRect(rect.x, rect.y, rect.width, rect.height); // Draw the rectangle
+      });
+
+      // Convert the canvas to base64 image
+      const base64Image = canvas.toDataURL();
+
+      // Send the base64 image to the backend
       const response = await axios.post("http://127.0.0.1:5000/ocr", {
         image: base64Image,
       });
