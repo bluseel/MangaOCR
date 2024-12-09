@@ -3,6 +3,7 @@ import html2canvas from "html2canvas";
 import { FaPen, FaSave, FaPrint, FaTrash } from "react-icons/fa"; // Added FaTrash for delete button
 import "./App.css";
 import RectangleOverlay from "./RectangleOverlay";
+import axios from "axios"; // Import axios for making HTTP requests
 
 const App = () => {
   const [rectangles, setRectangles] = useState([]);
@@ -173,6 +174,27 @@ const App = () => {
     });
   };
 
+  // Function to capture the image as base64 and send to the backend
+  const captureAndProcessImage = async () => {
+    try {
+      const canvas = await html2canvas(imageRef.current);
+      const base64Image = canvas.toDataURL(); // Get image as base64
+
+      // Send the base64 image to the Flask backend
+      const response = await axios.post("http://127.0.0.1:5000/ocr", {
+        image: base64Image,
+      });
+
+      if (response.data.text) {
+        alert("Extracted Text: " + response.data.text); // Display the extracted text
+      } else {
+        alert("Error extracting text.");
+      }
+    } catch (error) {
+      console.error("Error capturing or sending the image:", error);
+    }
+  };
+
   return (
     <div
       className="App"
@@ -205,6 +227,15 @@ const App = () => {
           title="Print Coordinates"
         >
           <FaPrint />
+        </button>
+
+        {/* New heart button for capture and process */}
+        <button
+          className="toolbar-button"
+          onClick={captureAndProcessImage}
+          title="Capture & Process Image"
+        >
+          ❤️
         </button>
       </div>
 
