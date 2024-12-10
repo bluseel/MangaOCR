@@ -142,7 +142,7 @@
 .scrollable-image {
   display: block;
   width: 100%;
-  height: 700vh;
+  height: 100%;
 }
 
 .overlay {

@@ -54,11 +54,11 @@ def extract_blue_regions(image):
     return blue_mask, blue_regions
 
 def read_text_from_blocks(image, blue_mask):
-    """Extract text blocks from the blue mask regions."""
+    """Extract text blocks from the blue mask regions, ensuring right-to-left reading order."""
     contours, _ = cv2.findContours(blue_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     
     blocks = []
-    contours = sorted(contours, key=lambda c: cv2.boundingRect(c)[0], reverse=True)
+    contours = sorted(contours, key=lambda c: cv2.boundingRect(c)[0], reverse=True)  # Right-to-left sort
     
     for contour in contours:
         x, y, w, h = cv2.boundingRect(contour)
@@ -75,12 +75,12 @@ def read_text_from_blocks(image, blue_mask):
         if previous_y is None or abs(previous_y - y) < row_threshold:
             current_row.append(block)
         else:
-            rows.append(sorted(current_row, key=lambda b: b[0]))
+            rows.append(sorted(current_row, key=lambda b: b[0], reverse=True))  # Sort blocks within each row right-to-left
             current_row = [block]
         previous_y = y
     
     if current_row:
-        rows.append(sorted(current_row, key=lambda b: b[0]))
+        rows.append(sorted(current_row, key=lambda b: b[0], reverse=True))  # Sort final row right-to-left
 
     return rows
 

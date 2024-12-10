@@ -16,6 +16,8 @@ const App = () => {
   const [resizing, setResizing] = useState(null); // Track resizing state (top-left, top-right, etc.)
   const imageRef = useRef(null);
   const [outpuText, setoutpuText] = useState("~~~ Nothing scanned yet ~~~");
+  const [arrayText, setarrayText] = useState([]);
+  const [isArrayText, setisArrayText] = useState(false);
 
   const [isPenMode, setIsPenMode] = useState(false); // Track if we're in pen mode or not
 
@@ -195,18 +197,25 @@ const App = () => {
       if (response.data.text) {
         // alert("Extracted Text: " + response.data.text); // Display the extracted text
         setoutpuText(response.data.text);
+        setarrayText(response.data.text);
+        setisArrayText(true);
+        console.log("truuuuuuuuuuuuuuuuuuuuu");
       } else {
         // alert("Error extracting text.");
         setoutpuText("Error extracting text.");
+        setisArrayText(false);
       }
     } catch (error) {
       console.error("Error capturing or sending the image:", error);
+      setisArrayText(false);
     }
   };
 
   const simpleOCRandCapture = async () => {
     setoutpuText("Performing Simple OCR...");
     try {
+      setisArrayText(false);
+
       // Capture only the image and overlays within the image container
       const canvas = await html2canvas(imageRef.current.parentElement, {
         backgroundColor: null, // Retain transparency
@@ -223,6 +232,7 @@ const App = () => {
 
       if (response.data.text) {
         // Update output text with extracted OCR result
+        console.log(response.data.text);
         setoutpuText(response.data.text);
       } else {
         setoutpuText("Error extracting text.");
@@ -257,7 +267,21 @@ const App = () => {
           <div className="output-section-body">
             <p>1. Click on pen and draw rectangles</p>
             <p>2. Then click heart to get results here:</p>
-            <div className="output-box">{outpuText}</div>
+            <div className="output-box">
+              {isArrayText ? (
+                arrayText ? (
+                  arrayText.map((item, index) => (
+                    <span key={index} style={{ display: "block" }}>
+                      {item + "array"}
+                    </span>
+                  ))
+                ) : (
+                  <div></div>
+                )
+              ) : (
+                outpuText
+              )}
+            </div>
           </div>
         </div>
         <div
@@ -323,10 +347,6 @@ const App = () => {
                   alt="Scrollable content"
                   className="scrollable-image"
                   ref={imageRef}
-                  style={{
-                    height: "300vh",
-                    width: "100%",
-                  }}
                   onMouseDown={handleMouseDown}
                 />
               ) : (
