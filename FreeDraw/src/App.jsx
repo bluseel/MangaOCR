@@ -14,6 +14,7 @@ const App = () => {
   const [dragging, setDragging] = useState(false); // For moving rectangles
   const [resizing, setResizing] = useState(null); // Track resizing state (top-left, top-right, etc.)
   const imageRef = useRef(null);
+  const [outpuText, setoutpuText] = useState("~~~ Nothing scanned yet ~~~");
 
   const [isPenMode, setIsPenMode] = useState(false); // Track if we're in pen mode or not
 
@@ -174,6 +175,7 @@ const App = () => {
 
   // Function to capture the image as base64 and send to the backend
   const captureAndProcessImage = async () => {
+    setoutpuText("Scanning...");
     try {
       // Capture only the image and overlays within the image container
       const canvas = await html2canvas(imageRef.current.parentElement, {
@@ -190,9 +192,11 @@ const App = () => {
       });
 
       if (response.data.text) {
-        alert("Extracted Text: " + response.data.text); // Display the extracted text
+        // alert("Extracted Text: " + response.data.text); // Display the extracted text
+        setoutpuText(response.data.text);
       } else {
-        alert("Error extracting text.");
+        // alert("Error extracting text.");
+        setoutpuText("Error extracting text.");
       }
     } catch (error) {
       console.error("Error capturing or sending the image:", error);
@@ -218,7 +222,7 @@ const App = () => {
         <h1 className="title">MANGA OCR</h1>
         <p>1. Click on pen and draw rectangles</p>
         <p>2. Then click heart to get results here:</p>
-        <div className="output-box"></div>
+        <div className="output-box">{outpuText}</div>
       </div>
       <div
         className="App input"
