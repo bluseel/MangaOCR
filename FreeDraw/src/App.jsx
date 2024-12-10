@@ -218,83 +218,103 @@ const App = () => {
 
   return (
     <div className="mainbody">
-      <div className="output">
+      <div className="titlesection">
         <h1 className="title">MANGA OCR</h1>
-        <p>1. Click on pen and draw rectangles</p>
-        <p>2. Then click heart to get results here:</p>
-        <div className="output-box">{outpuText}</div>
       </div>
-      <div
-        className="App input"
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        tabIndex={0}
-      >
-        {/* Overlay when in pen mode */}
-        {isPenMode && <div className="overlay" />}
-
-        {/* Sticky toolbar */}
-        <div className="toolbar">
-          <button
-            className={`toolbar-button ${canDraw ? "active" : ""}`}
-            onClick={toggleDrawing}
-            title="Toggle Drawing"
-          >
-            <FaPen />
-          </button>
-          <button
-            className="toolbar-button"
-            onClick={exportImage}
-            title="Download"
-          >
-            <FaSave />
-          </button>
-          <button
-            className="toolbar-button"
-            onClick={printRectangleCoords}
-            title="Print Coordinates"
-          >
-            <FaPrint />
-          </button>
-
-          {/* New heart button for capture and process */}
-          <button
-            className="toolbar-button"
-            onClick={captureAndProcessImage}
-            title="Capture & Process Image"
-          >
-            ❤️
-          </button>
+      <div className="bodysection">
+        <div className="output">
+          <div className="toolbar">Output Section</div>
+          <div className="output-section-body">
+            <p>1. Click on pen and draw rectangles</p>
+            <p>2. Then click heart to get results here:</p>
+            <div className="output-box">{outpuText}</div>
+          </div>
         </div>
+        <div
+          className="App input"
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          tabIndex={0}
+        >
+          {/* Overlay when in pen mode */}
+          {isPenMode && <div className="overlay" />}
 
-        {/* Scrollable image container */}
-        <input
-          type="file"
-          id="file-input"
-          name="ImageStyle"
-          onChange={handleImageUpload}
-        />
-        <div className="scroll-container">
-          <img
-            src={imageSrc}
-            alt="Scrollable content"
-            className="scrollable-image"
-            ref={imageRef}
-            style={{
-              height: "300vh",
-              width: "100%",
-            }}
-            onMouseDown={handleMouseDown}
-          />
-          <>
-            <RectangleOverlay
-              rectangles={rectangles}
-              activeRectangleIndex={activeRectangleIndex}
-              onRectangleClick={handleRectangleClick}
-              onDelete={handleDelete}
-              setResizing={setResizing}
-            />
-          </>
+          {/* Sticky toolbar */}
+          <div className="toolbar">
+            <div>Input Section</div>
+            <div>
+              <button
+                className={`toolbar-button ${canDraw ? "active" : ""}`}
+                onClick={toggleDrawing}
+                title="Toggle Drawing"
+              >
+                <FaPen />
+              </button>
+              <button
+                className="toolbar-button"
+                onClick={exportImage}
+                title="Download"
+              >
+                <FaSave />
+              </button>
+              <button
+                className="toolbar-button"
+                onClick={printRectangleCoords}
+                title="Print Coordinates"
+              >
+                <FaPrint />
+              </button>
+
+              {/* New heart button for capture and process */}
+              <button
+                className="toolbar-button"
+                onClick={captureAndProcessImage}
+                title="Capture & Process Image"
+              >
+                ❤️
+              </button>
+            </div>
+          </div>
+
+          {/* Scrollable image container */}
+          {imageSrc ? (
+            <div className="scroll-container">
+              {imageSrc ? (
+                <img
+                  src={imageSrc}
+                  alt="Scrollable content"
+                  className="scrollable-image"
+                  ref={imageRef}
+                  style={{
+                    height: "300vh",
+                    width: "100%",
+                  }}
+                  onMouseDown={handleMouseDown}
+                />
+              ) : (
+                <></>
+              )}
+              <>
+                <RectangleOverlay
+                  rectangles={rectangles}
+                  activeRectangleIndex={activeRectangleIndex}
+                  onRectangleClick={handleRectangleClick}
+                  onDelete={handleDelete}
+                  setResizing={setResizing}
+                />
+              </>
+            </div>
+          ) : (
+            <div className="fileinput">
+              <input
+                type="file"
+                id="file-input"
+                name="ImageStyle"
+                onChange={handleImageUpload}
+                className="fileinput-tag"
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>
