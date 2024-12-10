@@ -140,21 +140,19 @@ const App = () => {
   // Adjust the rectangle positions during export
   const exportImage = async () => {
     try {
-      // Capture the page content using html2canvas
-      const canvas = await html2canvas(document.body, {
-        scrollY: 0, // Prevent the page from scrolling when capturing the image
-        backgroundColor: "black", // Set the background color to black for the entire canvas
+      // Capture only the image and overlays within the image container
+      const canvas = await html2canvas(imageRef.current.parentElement, {
+        backgroundColor: null, // Retain transparency
+        useCORS: true, // For cross-origin images
       });
 
-      // Create a link to download the captured image
+      // Convert the canvas to an image and trigger download
       const link = document.createElement("a");
-      link.download = "exported-page.png"; // Name of the downloaded file
-      link.href = canvas.toDataURL("image/png"); // Convert the canvas to a PNG data URL
-
-      // Trigger the download
+      link.download = "exported-image.png"; // Name of the downloaded file
+      link.href = canvas.toDataURL("image/png"); // Get the PNG data URL
       link.click();
     } catch (error) {
-      console.error("Failed to export the image:", error); // Error handling
+      console.error("Failed to export the image:", error);
     }
   };
 
@@ -177,18 +175,13 @@ const App = () => {
   // Function to capture the image as base64 and send to the backend
   const captureAndProcessImage = async () => {
     try {
-      // Capture the image from the imageRef
-      const canvas = await html2canvas(imageRef.current);
-      const context = canvas.getContext("2d");
-
-      // Draw the rectangles on the canvas
-      rectangles.forEach((rect) => {
-        context.strokeStyle = "red"; // Set rectangle border color
-        context.lineWidth = 2; // Set border thickness
-        context.strokeRect(rect.x, rect.y, rect.width, rect.height); // Draw the rectangle
+      // Capture only the image and overlays within the image container
+      const canvas = await html2canvas(imageRef.current.parentElement, {
+        backgroundColor: null, // Retain transparency
+        useCORS: true, // For cross-origin images
       });
 
-      // Convert the canvas to base64 image
+      // Convert the canvas to a base64 image
       const base64Image = canvas.toDataURL();
 
       // Send the base64 image to the backend
@@ -206,73 +199,99 @@ const App = () => {
     }
   };
 
+  // ---------------------------
+  const [imageSrc, setImageSrc] = useState("");
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImageSrc(reader.result); // Set the uploaded image as the src
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
-    <div
-      className="App"
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      tabIndex={0}
-    >
-      {/* Overlay when in pen mode */}
-      {isPenMode && <div className="overlay" />}
-
-      {/* Sticky toolbar */}
-      <div className="toolbar">
-        <button
-          className={`toolbar-button ${canDraw ? "active" : ""}`}
-          onClick={toggleDrawing}
-          title="Toggle Drawing"
-        >
-          <FaPen />
-        </button>
-        <button
-          className="toolbar-button"
-          onClick={exportImage}
-          title="Download"
-        >
-          <FaSave />
-        </button>
-        <button
-          className="toolbar-button"
-          onClick={printRectangleCoords}
-          title="Print Coordinates"
-        >
-          <FaPrint />
-        </button>
-
-        {/* New heart button for capture and process */}
-        <button
-          className="toolbar-button"
-          onClick={captureAndProcessImage}
-          title="Capture & Process Image"
-        >
-          ❤️
-        </button>
+    <div className="mainbody">
+      <div className="output">
+        <h1 className="title">MANGA OCR</h1>
+        <p>1. Click on pen and draw rectangles</p>
+        <p>2. Then click heart to get results here:</p>
+        <div className="output-box"></div>
       </div>
+      <div
+        className="App input"
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        tabIndex={0}
+      >
+        {/* Overlay when in pen mode */}
+        {isPenMode && <div className="overlay" />}
 
-      {/* Scrollable image container */}
+        {/* Sticky toolbar */}
+        <div className="toolbar">
+          <button
+            className={`toolbar-button ${canDraw ? "active" : ""}`}
+            onClick={toggleDrawing}
+            title="Toggle Drawing"
+          >
+            <FaPen />
+          </button>
+          <button
+            className="toolbar-button"
+            onClick={exportImage}
+            title="Download"
+          >
+            <FaSave />
+          </button>
+          <button
+            className="toolbar-button"
+            onClick={printRectangleCoords}
+            title="Print Coordinates"
+          >
+            <FaPrint />
+          </button>
 
-      <div className="scroll-container">
-        <img
-          src="/4.jpg"
-          alt="Scrollable content"
-          className="scrollable-image"
-          ref={imageRef}
-          style={{
-            height: "300vh",
-            width: "100%",
-          }}
-          onMouseDown={handleMouseDown}
+          {/* New heart button for capture and process */}
+          <button
+            className="toolbar-button"
+            onClick={captureAndProcessImage}
+            title="Capture & Process Image"
+          >
+            ❤️
+          </button>
+        </div>
+
+        {/* Scrollable image container */}
+        <input
+          type="file"
+          id="file-input"
+          name="ImageStyle"
+          onChange={handleImageUpload}
         />
-        <>
-          <RectangleOverlay
-            rectangles={rectangles}
-            activeRectangleIndex={activeRectangleIndex}
-            onRectangleClick={handleRectangleClick}
-            onDelete={handleDelete}
-            setResizing={setResizing}
+        <div className="scroll-container">
+          <img
+            src={imageSrc}
+            alt="Scrollable content"
+            className="scrollable-image"
+            ref={imageRef}
+            style={{
+              height: "300vh",
+              width: "100%",
+            }}
+            onMouseDown={handleMouseDown}
           />
-        </>
+          <>
+            <RectangleOverlay
+              rectangles={rectangles}
+              activeRectangleIndex={activeRectangleIndex}
+              onRectangleClick={handleRectangleClick}
+              onDelete={handleDelete}
+              setResizing={setResizing}
+            />
+          </>
+        </div>
       </div>
     </div>
   );

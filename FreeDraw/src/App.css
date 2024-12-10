@@ -5,6 +5,29 @@
   font-family: Arial, sans-serif;
 }
 
+.mainbody {
+  display: flex;
+}
+
+.output {
+  margin: 20px;
+
+  width: 50vw;
+  .title {
+    text-align: center;
+  }
+
+  .output-box {
+    width: 80%;
+    min-height: 100px;
+    background-color: #555;
+  }
+}
+
+.input {
+  width: 50vw;
+}
+
 .toolbar {
   position: sticky;
   top: 0;
