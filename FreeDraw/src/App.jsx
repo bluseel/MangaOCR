@@ -272,7 +272,7 @@ const App = () => {
                 arrayText ? (
                   arrayText.map((item, index) => (
                     <span key={index} style={{ display: "block" }}>
-                      {item + "array"}
+                      {item.toUpperCase()}
                     </span>
                   ))
                 ) : (
