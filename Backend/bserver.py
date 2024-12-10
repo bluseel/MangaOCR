@@ -4,6 +4,7 @@ import base64
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from bapp import extract_text_from_image
+from bsimpleapp import extract_simple_text
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes (allowing React to communicate with the backend)
@@ -32,6 +33,24 @@ def ocr():
         # Log the error for debugging purposes
         print(f"Error during OCR processing: {str(e)}")
         return jsonify({'error': f"Internal server error: {str(e)}"}), 500
+
+
+@app.route('/simpleocr', methods=['POST'])
+def simple_ocr():
+    # Get the base64 image string from the frontend
+    data = request.json.get('image')
+    if not data:
+        return jsonify({'error': 'No image provided'}), 400
+
+    # Extract text using extract_text_from_image function
+    try:
+        extracted_text = extract_simple_text(data)  # Only return the extracted text
+        return jsonify({'text': extracted_text})  # Send only the text
+
+    except Exception as e:
+        print(f"Error during simple OCR processing: {str(e)}")
+        return jsonify({'error': f"Internal server error: {str(e)}"}), 500
+
 
 
 if __name__ == '__main__':

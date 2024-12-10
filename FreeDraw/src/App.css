@@ -75,7 +75,21 @@
     height: 100%;
 
     .fileinput-tag {
+      display: none;
+    }
+    .upload-btn {
       margin-top: -80px;
+      display: inline-block;
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+    }
+    .upload-btn:hover {
+      opacity: 0.8;
     }
   }
 }
@@ -140,4 +154,26 @@
   background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
   z-index: 9999; /* Place on top of all content */
   pointer-events: none; /* Make it unclickable */
+}
+
+.copyright-container {
+  text-align: center;
+  padding: 10px 0;
+  border-top: 1px solid #e0e0e0; /* Subtle border for separation */
+}
+
+.copyright-text {
+  font-size: 14px;
+  color: #555; /* Gray color for text */
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+.copyright-text a {
+  color: #007bff; /* Link color */
+  text-decoration: none;
+}
+
+.copyright-text a:hover {
+  text-decoration: underline; /* Underline on hover */
 }

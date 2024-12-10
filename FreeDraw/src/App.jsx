@@ -1,9 +1,10 @@
 import { useState, useRef } from "react";
 import html2canvas from "html2canvas";
-import { FaPen, FaSave, FaPrint, FaTrash } from "react-icons/fa"; // Added FaTrash for delete button
+import { FaPen, FaSave, FaPrint, FaTrash, FaHeart } from "react-icons/fa"; // Added FaTrash for delete button
 import "./App.css";
 import RectangleOverlay from "./RectangleOverlay";
 import axios from "axios"; // Import axios for making HTTP requests
+// import { color } from "html2canvas/dist/types/css/types/color";
 
 const App = () => {
   const [rectangles, setRectangles] = useState([]);
@@ -203,6 +204,35 @@ const App = () => {
     }
   };
 
+  const simpleOCRandCapture = async () => {
+    setoutpuText("Performing Simple OCR...");
+    try {
+      // Capture only the image and overlays within the image container
+      const canvas = await html2canvas(imageRef.current.parentElement, {
+        backgroundColor: null, // Retain transparency
+        useCORS: true, // For cross-origin images
+      });
+
+      // Convert the canvas to a base64 image
+      const base64Image = canvas.toDataURL();
+
+      // Send the base64 image to the backend
+      const response = await axios.post("http://127.0.0.1:5000/simpleocr", {
+        image: base64Image,
+      });
+
+      if (response.data.text) {
+        // Update output text with extracted OCR result
+        setoutpuText(response.data.text);
+      } else {
+        setoutpuText("Error extracting text.");
+      }
+    } catch (error) {
+      console.error("Error capturing or sending the image:", error);
+      setoutpuText("Failed to process the image.");
+    }
+  };
+
   // ---------------------------
   const [imageSrc, setImageSrc] = useState("");
   const handleImageUpload = (event) => {
@@ -265,13 +295,21 @@ const App = () => {
                 <FaPrint />
               </button>
 
+              <button
+                className="toolbar-button"
+                onClick={simpleOCRandCapture}
+                title="Simple OCR"
+              >
+                <FaHeart />
+              </button>
+
               {/* New heart button for capture and process */}
               <button
                 className="toolbar-button"
                 onClick={captureAndProcessImage}
                 title="Capture & Process Image"
               >
-                ❤️
+                <span style={{ paddingBottom: "20px" }}>❤️</span>
               </button>
             </div>
           </div>
@@ -306,6 +344,9 @@ const App = () => {
             </div>
           ) : (
             <div className="fileinput">
+              <label htmlFor="file-input" className="upload-btn">
+                Upload Image
+              </label>
               <input
                 type="file"
                 id="file-input"
@@ -316,6 +357,11 @@ const App = () => {
             </div>
           )}
         </div>
+      </div>
+      <div class="copyright-container">
+        <p class="copyright-text">
+          Project by: Baseer Ahmed, Muhammad Hassan, Attique Sahito
+        </p>
       </div>
     </div>
   );
