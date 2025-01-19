@@ -212,6 +212,10 @@ const App = () => {
   };
 
   const simpleOCRandCapture = async () => {
+    if (rectangles.length != 0) {
+      captureAndProcessImage();
+      return;
+    }
     setoutpuText("Performing Simple OCR...");
     try {
       setisArrayText(false);
@@ -259,7 +263,7 @@ const App = () => {
   return (
     <div className="mainbody">
       <div className="titlesection">
-        <h1 className="title">MANGA OCR</h1>
+        <h1 className="title">OCR</h1>
       </div>
       <div className="bodysection">
         <div className="output">
@@ -306,6 +310,7 @@ const App = () => {
               </button>
               <button
                 className="toolbar-button"
+                style={{ display: "none" }}
                 onClick={exportImage}
                 title="Download"
               >
@@ -314,6 +319,7 @@ const App = () => {
               <button
                 className="toolbar-button"
                 onClick={printRectangleCoords}
+                style={{ display: "none" }}
                 title="Print Coordinates"
               >
                 <FaPrint />
@@ -331,6 +337,7 @@ const App = () => {
               <button
                 className="toolbar-button"
                 onClick={captureAndProcessImage}
+                style={{ display: "none" }}
                 title="Capture & Process Image"
               >
                 <span style={{ paddingBottom: "20px" }}>❤️</span>
